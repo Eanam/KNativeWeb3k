@@ -38,7 +38,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.cmoigo.knativeweb3k"
+    namespace = "com.cmoigo.web3k"
     compileSdk = 34
     defaultConfig {
         minSdk = 28
