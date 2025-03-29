@@ -1,14 +1,11 @@
 package com.cmoigo.web3k.crypto.bip39
 
 import com.cmoigo.web3k.getSecurityRandomProvider
-import com.cmoigo.web3k.readResourceFile
+import com.cmoigo.web3k.mnemonic.BIP39ENWordListProvider
 import com.cmoigo.web3k.sha256
 import com.cmoigo.web3k.utils.getFirstNBits
 
-class BIP39WalletGenerator(
-    var mnemonicWordListPath: String = "bip39-en-mnemonic-word-list.txt",
-    var mnemonicCount: Int = 12
-) {
+class BIP39WalletGenerator(var mnemonicCount: Int = 12) {
 
     companion object {
         fun create(
@@ -20,7 +17,9 @@ class BIP39WalletGenerator(
         }
     }
 
-    private fun generateMnemonics() {
+    private val mnemonicWordListProvider by lazy { BIP39ENWordListProvider() }
+
+    fun generateMnemonics(): List<String> {
         //generate entropy
         val entropy = generateEntropy()
 
@@ -28,16 +27,18 @@ class BIP39WalletGenerator(
         val checksum = generateChecksum(entropy)
 
         //generate word list
-        val wordList = getMnemonicWordList() ?: return
+        val wordList = mnemonicWordListProvider.wordList
         val combinedBinaryString = (entropy + checksum).let {
             it.joinToString("") { byte ->
                 (byte.toInt() and 0xFF).toString(2).padStart(8, '0')
             }
         }
 
-        combinedBinaryString.chunked(11) { chunk ->
-            val index = chunk.toString().toInt(2)
-            wordList[index]
+        return combinedBinaryString.chunked(11) { chunk ->
+            if (chunk.length < 11) return@chunked -1
+            return@chunked chunk.toString().toInt(2)
+        }.mapNotNull { index ->
+            if (index in wordList.indices) wordList[index] else null
         }
     }
 
@@ -56,15 +57,5 @@ class BIP39WalletGenerator(
         //calculate sha-256 of entropy
         val digest = entropy.sha256()
         return digest.getFirstNBits(checksumBits)
-    }
-
-    fun getMnemonicWordList(): List<String>? {
-        return try {
-            val fileContent = readResourceFile(filePath = mnemonicWordListPath)
-            fileContent?.split("\n")
-        }catch (e: Exception) {
-            e.printStackTrace()
-            null
-        }
     }
 }

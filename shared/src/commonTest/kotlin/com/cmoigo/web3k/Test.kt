@@ -11,13 +11,11 @@ class CommonGreetingTest {
     @Test
     fun testCreateBIP39WalletGenerator() {
         val biP39WalletGenerator = BIP39WalletGenerator.create {
-            mnemonicWordListPath = "/testPath"
             mnemonicCount = 32
         }
 
         assertSame(
             "/testPath",
-            biP39WalletGenerator.mnemonicWordListPath,
             "bip39 wallet generator got the wrong file path"
         )
 
@@ -54,10 +52,10 @@ class CommonGreetingTest {
     }
 
     @Test
-    fun testGetMnemonicWordList() {
-        val biP39WalletGenerator = BIP39WalletGenerator.create{
-            mnemonicWordListPath = "123"
-        }
-        assertEquals(2048, biP39WalletGenerator.getMnemonicWordList()?.size)
+    fun testGenerateMnemonic() {
+        val generator = BIP39WalletGenerator.create()
+        val mnemonics = generator.generateMnemonics()
+        println("mnemonics: $mnemonics")
+        assertEquals(generator.mnemonicCount, mnemonics.size)
     }
 }
