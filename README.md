@@ -2,10 +2,10 @@
 
 ## Milestones
 ### 📝 To Do
-- [ ] **generate mnemonics**
 - [ ] **generate key pairs**
 - [ ] **generate addresses**
 
 ### ✅ Completed
+- [x] **generate mnemonics**
 
 
