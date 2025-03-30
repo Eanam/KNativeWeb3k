@@ -5,6 +5,8 @@ import kotlin.test.Test
 import kotlin.test.assertSame
 import kotlin.reflect.KClass
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class CommonGreetingTest {
 
@@ -55,7 +57,22 @@ class CommonGreetingTest {
     fun testGenerateMnemonic() {
         val generator = BIP39WalletGenerator.create()
         val mnemonics = generator.generateMnemonics()
-        println("mnemonics: $mnemonics")
+        println("mnemonics: ${mnemonics.joinToString(" ")}")
         assertEquals(generator.mnemonicCount, mnemonics.size)
+    }
+
+    @Test
+    fun testGeneratePBKDF2Seed() {
+        val mnemonics =
+            "able early brand myself rate feature trim shed give stuff win balcony".split(" ")
+        val seed = BIP39WalletGenerator.create().generatePBKDF2Seed(mnemonics)
+        val seedStr = seed?.joinToString("") {
+            (it.toInt() and 0xFF).toString(16).padStart(2, '0')
+        }
+        println("seedStr: $seedStr")
+        assertEquals(
+            "18d0b2f924b68ecdd51fd0914f811b0afdebd5070b16b1fbff0357057c518d49b506033d7d5b83bc513f521a9170eef54f7a3775a1c25e705ade519ec43ce608",
+            seedStr
+        )
     }
 }

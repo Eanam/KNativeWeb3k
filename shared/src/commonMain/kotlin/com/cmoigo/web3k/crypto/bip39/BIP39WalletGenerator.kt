@@ -2,6 +2,7 @@ package com.cmoigo.web3k.crypto.bip39
 
 import com.cmoigo.web3k.getSecurityRandomProvider
 import com.cmoigo.web3k.mnemonic.BIP39ENWordListProvider
+import com.cmoigo.web3k.pbkdf2
 import com.cmoigo.web3k.sha256
 import com.cmoigo.web3k.utils.getFirstNBits
 
@@ -18,6 +19,11 @@ class BIP39WalletGenerator(var mnemonicCount: Int = 12) {
     }
 
     private val mnemonicWordListProvider by lazy { BIP39ENWordListProvider() }
+
+    fun generatePBKDF2Seed(mnemonics: List<String> = generateMnemonics()): ByteArray? {
+        val salt = "mnemonic"
+        return pbkdf2(mnemonics.joinToString(" "), salt)
+    }
 
     fun generateMnemonics(): List<String> {
         //generate entropy
