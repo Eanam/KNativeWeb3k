@@ -7,3 +7,5 @@ interface SecurityRandomProvider {
 expect fun getSecurityRandomProvider(): SecurityRandomProvider
 
 expect fun pbkdf2(password: String, salt: String): ByteArray?
+
+expect fun hmacSHA512(key: ByteArray, data: ByteArray): ByteArray

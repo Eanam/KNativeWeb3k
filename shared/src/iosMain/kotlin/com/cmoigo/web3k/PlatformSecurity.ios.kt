@@ -4,7 +4,10 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.reinterpret
 import kotlinx.cinterop.usePinned
+import platform.CoreCrypto.CCHmac
 import platform.CoreCrypto.CCKeyDerivationPBKDF
+import platform.CoreCrypto.CC_SHA512_DIGEST_LENGTH
+import platform.CoreCrypto.kCCHmacAlgSHA512
 import platform.CoreCrypto.kCCPBKDF2
 import platform.CoreCrypto.kCCPRFHmacAlgSHA512
 import platform.posix.arc4random_buf
@@ -47,4 +50,24 @@ actual fun pbkdf2(password: String, salt: String): ByteArray? {
         }
     }
     return derivedKey
+}
+
+@OptIn(ExperimentalForeignApi::class)
+actual fun hmacSHA512(key: ByteArray, data: ByteArray): ByteArray {
+    val result = ByteArray(CC_SHA512_DIGEST_LENGTH)
+    key.usePinned { pinnedKey ->
+        data.usePinned { pinnedData ->
+            result.usePinned { pinnedResult ->
+                CCHmac(
+                    kCCHmacAlgSHA512,
+                    pinnedKey.addressOf(0),
+                    key.size.toULong(),
+                    pinnedData.addressOf(0),
+                    data.size.toULong(),
+                    pinnedResult.addressOf(0)
+                )
+            }
+        }
+    }
+    return result
 }

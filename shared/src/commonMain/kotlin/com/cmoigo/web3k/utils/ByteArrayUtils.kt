@@ -14,3 +14,10 @@ fun ByteArray.getFirstNBits(n: Int): ByteArray {
 
     return result
 }
+
+fun Int.toByteArray() = byteArrayOf(
+    (this shr 24).toByte(),
+    (this shr 16).toByte(),
+    (this shr 8).toByte(),
+    this.toByte(),
+)

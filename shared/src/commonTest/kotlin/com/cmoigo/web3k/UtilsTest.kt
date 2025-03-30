@@ -1,6 +1,7 @@
 package com.cmoigo.web3k
 
 import com.cmoigo.web3k.utils.getFirstNBits
+import com.cmoigo.web3k.utils.toByteArray
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
@@ -28,6 +29,16 @@ class UtilsTest {
         }
 
         assertSame("", binaryString)
+    }
+
+    @Test
+    fun testIntToByteArray() {
+        val i = 0x80000000.toInt()
+        val result = i.toByteArray().joinToString(" ") { byte ->
+            (byte.toInt() and 0xFF).toString(16).padStart(2, '0')
+        }
+
+        assertEquals("80 00 00 00", result)
     }
 
 }

@@ -6,7 +6,7 @@ import com.cmoigo.web3k.pbkdf2
 import com.cmoigo.web3k.sha256
 import com.cmoigo.web3k.utils.getFirstNBits
 
-class BIP39WalletGenerator(var mnemonicCount: Int = 12) {
+class BIP39WalletGenerator private constructor(var mnemonicCount: Int = 12) {
 
     companion object {
         fun create(
@@ -20,8 +20,11 @@ class BIP39WalletGenerator(var mnemonicCount: Int = 12) {
 
     private val mnemonicWordListProvider by lazy { BIP39ENWordListProvider() }
 
-    fun generatePBKDF2Seed(mnemonics: List<String> = generateMnemonics()): ByteArray? {
-        val salt = "mnemonic"
+    fun generatePBKDF2Seed(
+        mnemonics: List<String> = generateMnemonics(),
+        passPhrase: String = ""
+    ): ByteArray? {
+        val salt = "mnemonic${passPhrase}NFKD"
         return pbkdf2(mnemonics.joinToString(" "), salt)
     }
 
