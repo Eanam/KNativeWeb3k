@@ -24,7 +24,7 @@ class BIP39WalletGenerator private constructor(var mnemonicCount: Int = 12) {
         mnemonics: List<String> = generateMnemonics(),
         passPhrase: String = ""
     ): ByteArray? {
-        val salt = "mnemonic${passPhrase}NFKD"
+        val salt = "mnemonic${passPhrase}"
         return pbkdf2(mnemonics.joinToString(" "), salt)
     }
 

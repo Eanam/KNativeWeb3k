@@ -30,9 +30,14 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             //put your multiplatform dependencies here
+            implementation(libs.bignum)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+        }
+        androidMain.dependencies {
+            // https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on
+            implementation(libs.bouncycastle.bcprov.jdk18on)
         }
     }
 }

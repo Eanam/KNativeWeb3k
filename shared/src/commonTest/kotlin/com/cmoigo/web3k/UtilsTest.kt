@@ -2,6 +2,7 @@ package com.cmoigo.web3k
 
 import com.cmoigo.web3k.utils.getFirstNBits
 import com.cmoigo.web3k.utils.toByteArray
+import com.cmoigo.web3k.utils.toHexStringWithPaddingZero
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
@@ -33,12 +34,14 @@ class UtilsTest {
 
     @Test
     fun testIntToByteArray() {
-        val i = 0x80000000.toInt()
-        val result = i.toByteArray().joinToString(" ") { byte ->
-            (byte.toInt() and 0xFF).toString(16).padStart(2, '0')
-        }
+        var i = 0x80000000.toInt()
+        var result = i.toByteArray().toHexStringWithPaddingZero()
 
-        assertEquals("80 00 00 00", result)
+        assertEquals("80000000", result)
+
+        val i2 = 0x80000000.toUInt().or(44.toUInt())
+        assertEquals((-2147483604).toUInt(), i2)
+
     }
 
 }
